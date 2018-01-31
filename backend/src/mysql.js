@@ -1,10 +1,11 @@
+const bcrypt = require('bcrypt');
 var mysql = require('mysql');
 
 var conn = mysql.createConnection({
 	host: 'localhost',
-	user: 'root',
-	password: '',
-	database: ''
+	user: process.env.DB_USER,
+	password: process.env.DB_USER_PASS,
+	database: process.env.DB_NAME
 });
 
 function disconnect(){
@@ -18,6 +19,7 @@ function disconnect(){
 		}
 	});
 }
+
 
 exports.addUser = function(name, email, password, callback){
 	conn.connect(function(err) {

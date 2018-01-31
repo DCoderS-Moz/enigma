@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/DCoderS-Moz/enigma#readme",
   "dependencies": {
+    "bcrypt": "^1.0.3",
     "mysql": "^2.15.0"
   }
 }
