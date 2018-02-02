@@ -20,12 +20,12 @@ router.post('/register', function(req, res){
 	})
 	.then(function(){
 		res.json({
-			'success': 'true'
+			'success': true
 		})
 	})
 	.catch(function(err){
 		res.json({
-			'success': 'false',
+			'success': false,
 			'error': err
 		})
 	});
@@ -47,13 +47,13 @@ router.post('/login', function(req, res){
 	})
 	.then(function(token){
 		res.json({
-			'success': 'true',
+			'success': true,
 			'token': token
 		})
 	})
 	.catch(function(err){
 		res.json({
-			'success': 'false',
+			'success': false,
 			'error': err
 		})
 	});
@@ -85,7 +85,7 @@ function matchPassword(password, hash){
 
 function generateSession(email){
 	return new Promise(function(resolve, reject){
-		const payload = {user: email};
+		const payload = {user_email: email};
 	    jwt.sign(payload, config.SESSION_TOKEN_SECRET, function(err, token){
 	    	if(err){
 				return reject('session token could not be generated');

@@ -4,10 +4,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-
-app.get('/', function(req, res){
-	res.send('YOLO');
-});
+app.use(express.static('public'))
 
 var dashboard = require('./routes/api.js');
 app.use('/api', dashboard);
