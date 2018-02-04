@@ -12,6 +12,7 @@
 			'password': password,
 			'reg_no': reg_no
 		}, function(data, status){
+			console.log(status);
 			if(data.success == true){
 				$("#registration-form").hide();
 				$("#error-msg-box").hide();

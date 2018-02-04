@@ -6,8 +6,8 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 app.use(express.static('public'))
 
-var dashboard = require('./routes/api.js');
-app.use('/api', dashboard);
+var api = require('./routes/api.js');
+app.use('/api', api);
 
 var user = require('./routes/user.js');
 app.use('/user', user);

@@ -1,7 +1,5 @@
 var mysql = require('mysql');
 const config = require('./config.js');
-const saltRounds = 10;
-const bcrypt = require('bcrypt');
 
 var conn = mysql.createConnection({
 	host: 'localhost',
@@ -9,16 +7,6 @@ var conn = mysql.createConnection({
 	password: config.DB_USER_PASS,
 	database: config.DB_NAME
 });
-
-function generateHash(text){
-	return new Promise(function(resolve, reject){
-		bcrypt.genSalt(saltRounds, function(err, salt) {
-		    bcrypt.hash(text, salt, function(err, hash) {
-		        resolve(hash)
-		    });
-		});
-	});
-}
 
 conn.connect(function(err) {
 	if(err){
@@ -54,14 +42,95 @@ exports.recordToken = function(email, token){
 	});
 }
 
+exports.removeToken = function(email){
+	return new Promise(function(resolve, reject){
+		var sql = "UPDATE users SET token='' WHERE email='" + email +"'";
+		conn.query(sql, function(err){
+			if(err){
+				reject(err.sqlMessage);
+			}else{
+				resolve();
+			}
+		});
+	});
+}
+
 exports.getPassword = function(email){
 	return new Promise(function(resolve, reject){
 		var sql = "SELECT password from users WHERE email='" + email + "'";
 		conn.query(sql, function(err, result){
 			if(err){
 				reject(err.sqlMessage);
+			}else if(!result[0]){
+				reject('wrong password')
 			}else{
 				resolve(result[0].password);
+			}
+		});
+	});
+}
+
+exports.getLastQuestion = function(email){
+	return new Promise(function(resolve, reject){
+		var sql = "SELECT last_question from users WHERE email='" + email + "'";
+		conn.query(sql, function(err, result){
+			if(err){
+				reject(err.sqlMessage);
+			}else{
+				resolve(result[0].last_question);
+			}
+		});
+	});
+}
+
+exports.getQuestionDetails = function(question_no){
+	return new Promise(function(resolve, reject){
+		var sql = "SELECT question, option1, option2, option3, option4 from questions WHERE id='" + question_no + "'";
+		conn.query(sql, function(err, result){
+			if(err){
+				reject(err.sqlMessage);
+			}else{
+				result[0]['questionNo'] = question_no;
+				resolve(result[0]);
+			}
+		});
+	});
+}
+
+exports.getCorrectAnswer = function(question_no){
+	return new Promise(function(resolve, reject){
+		var sql = "SELECT correct_answer from questions WHERE id='" + question_no + "'";
+		conn.query(sql, function(err, result){
+			if(err){
+				reject(err.sqlMessage);
+			}else{
+				resolve(result[0].correct_answer);
+			}
+		});
+	});
+}
+
+exports.incrementScore = function(email){
+	return new Promise(function(resolve, reject){
+		var sql = "UPDATE users SET score=score+1 WHERE email='" + email + "'";
+		conn.query(sql, function(err, result){
+			if(err){
+				reject(err.sqlMessage);
+			}else{
+				resolve();
+			}
+		});
+	});
+}
+
+exports.incrementLastQuestion = function(email){
+	return new Promise(function(resolve, reject){
+		var sql = "UPDATE users SET last_question=last_question+1 WHERE email='" + email + "'";
+		conn.query(sql, function(err, result){
+			if(err){
+				reject(err.sqlMessage);
+			}else{
+				resolve();
 			}
 		});
 	});

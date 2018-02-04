@@ -14,9 +14,10 @@
 				$("#success-msg").html('Login successful. Your are being redirected.');
 				$("#success-msg-box").show();
 				document.cookie = "token=" + data.token; 
+				window.location = '/dashboard.html'
 			}else{
 				if(data.error.indexOf('wrong password') != -1){
-					data.error = 'Incorrect password'
+					data.error = 'Incorrect email or password'
 				}else if(data.error.indexOf('incomplete') != -1){
 					data.error = 'Please fill the form properly'
 				}

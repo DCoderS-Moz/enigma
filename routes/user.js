@@ -5,6 +5,8 @@ const saltRounds = 10;
 const bcrypt = require('bcrypt');
 var jwt    = require('jsonwebtoken');
 var config = require('./config');
+var cookieParser = require('cookie-parser')
+router.use(cookieParser())
 
 router.get('/', function(req, res){
 	res.send('User');
@@ -58,6 +60,50 @@ router.post('/login', function(req, res){
 		})
 	});
 });
+
+router.post('/logout', function(req, res){
+	token = req.cookies.token;
+	validateToken(token)
+	.then(function(token){
+		return verifyToken(token);
+	})
+	.then(function(user_email){
+		req.user_email = user_email;
+		return database.removeToken(user_email);
+	})
+	.then(function(user_email){
+		return res.json({
+			'success': true
+		});
+	})
+	.catch(function(err){
+		return res.json({ 
+	        success: false, 
+	        error: err
+	    });
+	})
+});
+
+function validateToken(token){
+	return new Promise(function(resolve, reject){
+		if(token)
+			resolve(token);
+		else
+			reject('invalid token');
+	});
+}
+
+function verifyToken(token){
+	return new Promise(function(resolve, reject){
+		jwt.verify(token, config.SESSION_TOKEN_SECRET, function(err, decoded){      
+			if (err) {
+				return reject('invalid token');
+			} else {
+				return resolve(decoded.user_email);
+			}
+		});
+	});
+}
 
 function generateHash(text){
 	return new Promise(function(resolve){
