@@ -28,3 +28,5 @@ module.exports = {
 ## Modifying HTML content
 
 The homepage can be directly modified which is present under ```public/``` folder as ```index.html```
+
+***IMPORTANT : Make sure your (question 1 has id 1), (question 2 has id 2), ... in the questions table.***
